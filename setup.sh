@@ -19,8 +19,10 @@ apt-get install default-jre -y
 apt-get install p7zip-full -y
 
 ### Move to a nice location
+echo "In $PWD"
 mkdir /home/$USER/rewards # && cd "$_"
 cd /home/$USER/rewards
+echo "In $PWD"
 
 ### Download the jar
 wget https://github.com/BCSTech-CordaTeam/RewardsAzure/blob/master/$FILE.7z?raw=true
@@ -57,16 +59,22 @@ spring.datasource.password=$POSTGRES_PASS" > ./WEB-INF/classes/application.prope
 7z u $FILE.war ./WEB-INF
 
 ### Cleanup
+echo "removing webinf and 7z file."
 rm WEB-INF -r -f
+rm $FILE.7z
 
 ### Generate script for starting server
+echo "creating start.sh"
 echo "
 #!/bin/sh
+echo "Starting Rewards"
 java -jar ./$FILE.war" > start.sh
+# Give permission to run
 chmod 770 ./start.sh
 
 ### Run the jar
-nohup ./start.sh & 
+echo "starting start.sh"
+nohup start.sh & 
 
 ### Self destruct
 # Get path
@@ -79,5 +87,6 @@ if [ -z "$MY_PATH" ] ; then
   exit 1  # fail
 fi
 
+echo "removing $MY_PATH/${0##*/}"
 rm $MY_PATH/${0##*/}
 
