@@ -19,7 +19,8 @@ apt-get install default-jre -y
 apt-get install p7zip-full -y
 
 ### Move to a nice location
-mkdir /home/$USER/rewards && cd "$_"
+mkdir /home/$USER/rewards # && cd "$_"
+cd /home/$USER/rewards
 
 ### Download the jar
 wget https://github.com/BCSTech-CordaTeam/RewardsAzure/blob/master/$FILE.7z?raw=true
