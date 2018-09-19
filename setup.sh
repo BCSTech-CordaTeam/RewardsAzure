@@ -63,6 +63,7 @@ rm WEB-INF -r -f
 echo "
 #!/bin/sh
 java -jar ./$FILE.war" > start.sh
+chmod 770 ./start.sh
 
 ### Run the jar
 nohup ./start.sh & 
