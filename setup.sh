@@ -79,7 +79,7 @@ chown $USER:$USER ./start.sh
 chown $USER:$USER ./$File.war
 
 ### Run the jar
-nohup start.sh & 
+nohup ./start.sh & 
 
 ### Self destruct
 rm $MY_PATH/${0##*/}
