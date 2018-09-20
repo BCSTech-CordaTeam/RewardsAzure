@@ -11,6 +11,16 @@ USER=$7
 
 FILE="rewards-0.0.3-DEV"
 
+# Get current path of this script for later.
+# Source: https://stackoverflow.com/questions/630372/determine-the-path-of-the-executing-bash-script
+MY_PATH="`dirname \"$0\"`"              # relative
+MY_PATH="`( cd \"$MY_PATH\" && pwd )`"  # absolutized and normalized
+if [ -z "$MY_PATH" ] ; then
+  # error; for some reason, the path is not accessible
+  # to the script (e.g. permissions re-evaled after suid)
+  exit 1  # fail
+fi
+
 ### Download/Install dependencies
 apt-get update -y
 # Java
@@ -19,10 +29,8 @@ apt-get install default-jre -y
 apt-get install p7zip-full -y
 
 ### Move to a nice location
-echo "In $PWD"
 mkdir /home/$USER/rewards # && cd "$_"
 cd /home/$USER/rewards
-echo "In $PWD"
 
 ### Download the jar
 wget https://github.com/BCSTech-CordaTeam/RewardsAzure/blob/master/$FILE.7z?raw=true
@@ -59,34 +67,19 @@ spring.datasource.password=$POSTGRES_PASS" > ./WEB-INF/classes/application.prope
 7z u $FILE.war ./WEB-INF
 
 ### Cleanup
-echo "removing webinf and 7z file."
 rm WEB-INF -r -f
 rm $FILE.7z
 
 ### Generate script for starting server
-echo "creating start.sh"
 echo "
 #!/bin/sh
-echo "Starting Rewards"
 java -jar ./$FILE.war" > start.sh
 # Give permission to run
-chmod 770 ./start.sh
+chown $USER:$USER ./start.sh
 
 ### Run the jar
-echo "starting start.sh"
 nohup start.sh & 
 
 ### Self destruct
-# Get path
-# Source: https://stackoverflow.com/questions/630372/determine-the-path-of-the-executing-bash-script
-MY_PATH="`dirname \"$0\"`"              # relative
-MY_PATH="`( cd \"$MY_PATH\" && pwd )`"  # absolutized and normalized
-if [ -z "$MY_PATH" ] ; then
-  # error; for some reason, the path is not accessible
-  # to the script (e.g. permissions re-evaled after suid)
-  exit 1  # fail
-fi
-
-echo "removing $MY_PATH/${0##*/}"
 rm $MY_PATH/${0##*/}
 
