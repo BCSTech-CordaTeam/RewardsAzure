@@ -76,6 +76,7 @@ echo "
 java -jar ./$FILE.war" > start.sh
 # Give permission to run
 chown $USER:$USER ./start.sh
+chown $USER:$USER ./$File.war
 
 ### Run the jar
 nohup start.sh & 
