@@ -76,10 +76,12 @@ echo "
 java -jar ./$FILE.war" > start.sh
 # Give permission to run
 chown $USER:$USER ./start.sh
-chown $USER:$USER ./$File.war
+chown $USER:$USER ./$FILE.war
+chmod 770 ./start.sh
+chmod 770 ./$FILE.war
 
 ### Run the jar
-nohup ./start.sh & 
+sudo nohup ./start.sh & 
 
 ### Self destruct
 rm $MY_PATH/${0##*/}
