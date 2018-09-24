@@ -70,18 +70,39 @@ spring.datasource.password=$POSTGRES_PASS" > ./WEB-INF/classes/application.prope
 rm WEB-INF -r -f
 rm $FILE.7z
 
-### Generate script for starting server
+### Generate systemd thingy
 echo "
-#!/bin/sh
-java -jar ./$FILE.war" > start.sh
-# Give permission to run
-chown $USER:$USER ./start.sh
-chown $USER:$USER ./$FILE.war
-chmod 770 ./start.sh
-chmod 770 ./$FILE.war
+[Unit]
+Description=Rewards APIs
+Requires=network.target
+
+[Service]
+Type=simple
+User=$USER
+WorkingDirectory=/home/$USER/rewards
+ExecStart=/usr/bin/java -server -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:InitialRAMFraction=2 -XX:MinRAMFraction=2 -XX:MaxRAMFraction=2 -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:+UseStringDeduplication -jar /home/$USER/rewards/$FILE.war
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+" > /etc/systemd/system/rewards.service
+
+### Start the service
+systemctl enable rewards.service
+systemctl start rewards.service
+
+### Generate script for starting server
+# echo "
+# #!/bin/sh
+# java -jar /home/$USER/rewards/$FILE.war" > start.sh
+# # Give permission to run
+# chown $USER:$USER ./start.sh
+# chown $USER:$USER ./$FILE.war
+# chmod 770 ./start.sh
+# chmod 770 ./$FILE.war
 
 ### Run the jar
-sudo nohup ./start.sh & 
+# sudo nohup ./start.sh & 
 
 ### Self destruct
 rm $MY_PATH/${0##*/}
