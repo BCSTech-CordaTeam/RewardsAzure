@@ -57,11 +57,12 @@ logging.level.org.springframework.web=ERROR
 logging.level.com.framework.rewards=DEBUG
 logging.pattern.console= "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
 logging.pattern.file= "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
-spring.datasource.url= jdbc:postgresql://$POSTGRES_URL:$POSTGRES_PORT/$POSTGRES_DBNAME?user=$POSTGRES_LOGIN&password=$POSTGRES_PASS&sslmode=require
+spring.datasource.url= jdbc:postgresql://$POSTGRES_URL:$POSTGRES_PORT/$POSTGRES_DBNAME?&sslmode=require
 spring.database.driverClassName=org.postgresql.Driver
 spring.jpa.properties.hibernate.default_schema=public
 spring.datasource.username=$POSTGRES_LOGIN
 spring.datasource.password=$POSTGRES_PASS" > ./WEB-INF/classes/application.properties
+# user=$POSTGRES_LOGIN&password=$POSTGRES_PASS
 
 ### Move application.properties into the WAR
 7z u $FILE.war ./WEB-INF
@@ -91,10 +92,9 @@ WantedBy=multi-user.target
 systemctl enable rewards.service
 systemctl start rewards.service
 
-### Generate script for starting server
-# echo "
-# #!/bin/sh
-# java -jar /home/$USER/rewards/$FILE.war" > start.sh
+### Generate readme
+echo "
+The rewards framework is running through a systemd service and will automatically restart upon vm shutdown. " > README.md
 # # Give permission to run
 # chown $USER:$USER ./start.sh
 # chown $USER:$USER ./$FILE.war
